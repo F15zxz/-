@@ -1,0 +1,26 @@
+name: reminder
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  send:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Send
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          MSGS=(
+            "اللهم صل وسلم على نبينا محمد ﷺ"
+            "صلّ على النبي ﷺ"
+            "لا تنسَ الصلاة على النبي ﷺ"
+            "اللهم صلِّ وسلم وبارك على سيدنا محمد ﷺ"
+          )
+          MSG="${MSGS[$RANDOM % ${#MSGS[@]}]}"
+          curl -s -H "Content-Type: application/json" \
+          -d "{\"content\":\"$MSG\"}" "$WEBHOOK"
